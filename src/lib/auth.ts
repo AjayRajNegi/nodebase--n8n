@@ -4,6 +4,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { checkout, polar, portal } from "@polar-sh/better-auth";
 import { polarClient } from "./polar";
 
+// Creates a better-auth instance
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
@@ -15,6 +16,7 @@ export const auth = betterAuth({
   plugins: [
     polar({
       client: polarClient,
+      // Creates a polar customer on new signup
       createCustomerOnSignUp: true,
       use: [
         checkout({
@@ -24,9 +26,10 @@ export const auth = betterAuth({
               slug: "pro",
             },
           ],
-          successUrl: process.env.POLAR_ACCESS_TOKEN,
+          successUrl: "/",
           authenticatedUsersOnly: true,
         }),
+        // Polar customer portal
         portal(),
       ],
     }),
