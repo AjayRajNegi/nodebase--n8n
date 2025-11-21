@@ -10,6 +10,8 @@ import { useWorkflowsParams } from "./use-workflows-params";
 export const useSuspenseWorkflows = () => {
   const trpc = useTRPC();
   const [params] = useWorkflowsParams();
+
+  // Looks for previously cached query
   return useSuspenseQuery(trpc.workflows.getMany.queryOptions(params));
 };
 
