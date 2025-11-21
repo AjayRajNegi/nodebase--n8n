@@ -2,7 +2,10 @@ import { authClient } from "@/lib/auth-client";
 import { useQuery } from "@tanstack/react-query";
 
 export const useSubscription = () => {
+  // Caches  the result, give loading, error and data states
+  // Auto re-fetch
   return useQuery({
+    // React Query will cache the subscription status
     queryKey: ["subscription"],
     queryFn: async () => {
       const { data } = await authClient.customer.state();

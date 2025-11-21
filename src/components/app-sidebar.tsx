@@ -39,6 +39,8 @@ const menuItems = [
 export default function AppSidebar() {
   const router = useRouter();
   const pathname = usePathname();
+
+  // Checks if the client-side has any subsriptions
   const { hasActiveSubscription, isLoading } = useHasActiveSubscription();
 
   return (
