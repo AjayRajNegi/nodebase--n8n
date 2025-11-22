@@ -33,14 +33,18 @@ export const useCreateWorkflow = () => {
 };
 
 export const useRemoveWorkflow = () => {
+  // Access to tRPC procedures
   const trpc = useTRPC();
+  // Get the queryClient to invalidate queries
   const queryClient = useQueryClient();
 
   return useMutation(
     trpc.workflows.remove.mutationOptions({
       onSuccess: (data) => {
         toast.success(`Workflow ${data.name} reomved`);
+        // Fetches fresh data
         queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
+        // Invalidate the one-workflow detail query
         queryClient.invalidateQueries(
           trpc.workflows.getOne.queryFilter({ id: data.id })
         );
