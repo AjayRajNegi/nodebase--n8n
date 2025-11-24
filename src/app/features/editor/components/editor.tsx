@@ -33,14 +33,17 @@ export const EditorError = () => {
 };
 
 export const Editor = ({ workflowId }: { workflowId: string }) => {
+  // Prefetch workflow
   const { data: workflow } = useSuspenseWorkflow(workflowId);
 
+  // Update the value of atom without subscribing the components to its changes
   const setEditor = useSetAtom(editorAtom);
 
   const [nodes, setNodes] = useState<Node[]>(workflow.nodes);
   const [edges, setEdges] = useState<Edge[]>(workflow.edges);
 
   const onNodesChange = useCallback(
+    // Updates the changes of nodes
     (changes: NodeChange[]) =>
       setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
     []

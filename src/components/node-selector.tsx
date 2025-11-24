@@ -2,7 +2,7 @@
 
 import { NodeType } from "@/generated/prisma";
 import { createId } from "@paralleldrive/cuid2";
-import { GlobeIcon, MousePointerIcon, TypeIcon } from "lucide-react";
+import { GlobeIcon, MousePointerIcon } from "lucide-react";
 import {
   Sheet,
   SheetContent,
