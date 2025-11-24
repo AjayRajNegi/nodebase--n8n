@@ -61,6 +61,7 @@ export const workflowsRouter = createTRPCRouter({
         ),
       })
     )
+    // Replace all the nodes by deleting old nodes and edges
     .mutation(async ({ ctx, input }) => {
       const { id, nodes, edges } = input;
 
