@@ -21,8 +21,12 @@ import { Input } from "@/components/ui/input";
 import { useAtomValue } from "jotai";
 import { editorAtom } from "../store/atoms";
 
+// Takes all the nodes from the atom and then replaces all the current nodes in the workflow
 export const EditorSaveButton = ({ workflowId }: { workflowId: string }) => {
+  // Reads the current value of Jotai atom
   const editor = useAtomValue(editorAtom);
+
+  // Return value of hook which is a mutation object
   const saveWorkflow = useUpdateWorkflow();
 
   const handleSave = () => {
@@ -49,8 +53,12 @@ export const EditorSaveButton = ({ workflowId }: { workflowId: string }) => {
   );
 };
 
+// Update the name of workflow
 export const EditorNameInput = ({ workflowId }: { workflowId: string }) => {
+  // Prefetch the workflow
   const { data: workflow } = useSuspenseWorkflow(workflowId);
+
+  // Return value of the hook
   const updateWorkflow = useUpdateWorkflowName();
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(workflow.name);

@@ -23,7 +23,9 @@ import { UseEntitySearch } from "@/hooks/use-entity-search";
 import { Workflow } from "@/generated/prisma";
 import { WorkflowIcon } from "lucide-react";
 
+// Updates the params
 export const WorkflowsSearch = () => {
+  // Gets a searchValue and a function to update.
   const [params, setParams] = useWorkflowsParams();
   const { searchValue, onSearchChange } = UseEntitySearch({
     params,
@@ -145,6 +147,7 @@ export const WorkflowsEmpty = () => {
   );
 };
 
+// Renders single workflow and it's options
 export const WorkflowItem = ({ data }: { data: Workflow }) => {
   const removeWorkflow = useRemoveWorkflow();
   const handleRemove = () => {

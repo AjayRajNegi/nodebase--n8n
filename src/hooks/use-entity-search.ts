@@ -14,6 +14,7 @@ export function UseEntitySearch<T extends { search: string; page: number }>({
 }: UseEntitySearchProps<T>) {
   const [localSearch, setLocalSearch] = useState(params.search);
 
+  // Sets the value of params
   useEffect(() => {
     if (localSearch === "" && params.search !== "") {
       setParams({
@@ -37,10 +38,12 @@ export function UseEntitySearch<T extends { search: string; page: number }>({
     return () => clearTimeout(timer);
   }, [localSearch, params, setParams, debounceMs]);
 
+  // Sets the value of localSearch to be returned
   useEffect(() => {
     setLocalSearch(params.search);
   }, [params.search]);
 
+  // Returns the localSearch and a function to update localSearch
   return {
     searchValue: localSearch,
     onSearchChange: setLocalSearch,

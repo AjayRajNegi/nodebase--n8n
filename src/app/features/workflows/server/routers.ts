@@ -11,6 +11,8 @@ import { generateSlug } from "random-word-slugs";
 import z from "zod";
 
 export const workflowsRouter = createTRPCRouter({
+  // Creates these mutations/API endpoints
+  // Create a workflow
   create: premiumProcedure.mutation(({ ctx }) => {
     return prisma.workflow.create({
       data: {
@@ -26,6 +28,8 @@ export const workflowsRouter = createTRPCRouter({
       },
     });
   }),
+
+  // Remove a workflow
   remove: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(({ ctx, input }) => {
@@ -33,6 +37,8 @@ export const workflowsRouter = createTRPCRouter({
         where: { id: input.id, userId: ctx.auth.user.id },
       });
     }),
+
+  // Update a workflow
   update: protectedProcedure
     .input(
       z.object({
@@ -55,6 +61,7 @@ export const workflowsRouter = createTRPCRouter({
         ),
       })
     )
+    // Replace all the nodes by deleting old nodes and edges
     .mutation(async ({ ctx, input }) => {
       const { id, nodes, edges } = input;
 
@@ -98,6 +105,8 @@ export const workflowsRouter = createTRPCRouter({
         return workflow;
       });
     }),
+
+  // Update name of workflow
   updateName: protectedProcedure
     .input(z.object({ id: z.string(), name: z.string().min(1) }))
     .mutation(({ ctx, input }) => {
@@ -106,6 +115,8 @@ export const workflowsRouter = createTRPCRouter({
         data: { name: input.name },
       });
     }),
+
+  // Get a specific workflow
   getOne: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -137,6 +148,8 @@ export const workflowsRouter = createTRPCRouter({
 
       return { id: workflow.id, name: workflow.name, nodes, edges };
     }),
+
+  // Get workflows with pagination
   getMany: protectedProcedure
     .input(
       z.object({

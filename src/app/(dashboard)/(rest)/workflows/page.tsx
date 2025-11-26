@@ -19,9 +19,10 @@ type Props = {
 export default async function Page({ searchParams }: Props) {
   await requireAuth();
 
+  // Prefetches workflows on the server and then hydrate the client using useSuspenseQuery()
   const params = await workflowsParamsLoader(searchParams);
-
   prefetchWorkflows(params);
+
   return (
     <WorkflowsContainer>
       <HydrateClient>

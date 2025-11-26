@@ -22,6 +22,7 @@ export default async function Page({ params }: PageProps) {
     <HydrateClient>
       <ErrorBoundary fallback={<EditorError />}>
         <Suspense fallback={<EditorLoading />}>
+          {/* Renders Sidebar, WorkflowSaveButton and WorkflowNameInput */}
           <EditorHeader workflowId={workflowId} />
           <main className="flex-1">
             <Editor workflowId={workflowId} />
