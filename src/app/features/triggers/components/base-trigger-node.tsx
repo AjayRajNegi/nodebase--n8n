@@ -23,6 +23,7 @@ interface BaseTriggerNodeProps extends NodeProps {
   status?: NodeStatus;
 }
 
+// Uses memo to avoid unnecessary re-renders
 export const BaseTriggerNode = memo(
   ({
     id,
@@ -34,7 +35,10 @@ export const BaseTriggerNode = memo(
     onSettings,
     onDoubleClick,
   }: BaseTriggerNodeProps) => {
+    // Used to modify overall flow graph
     const { setNodes, setEdges } = useReactFlow();
+
+    // Removes the node:id and edges connected to id
     const handleDelete = () => {
       setNodes((currentNodes) => {
         const updatedNodes = currentNodes.filter((node) => node.id !== id);
@@ -75,6 +79,7 @@ export const BaseTriggerNode = memo(
                 <Icon className="size-4 text-muted-foreground" />
               )}
               {children}
+              {/* Only one connection can be made to the node */}
               <BaseHandle
                 id="source-1"
                 type="source"
