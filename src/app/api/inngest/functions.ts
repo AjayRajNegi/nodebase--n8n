@@ -4,13 +4,17 @@ import { generateText } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createAnthropic } from "@ai-sdk/anthropic";
 
+// Creates instances of each model
 const google = createGoogleGenerativeAI();
 const openai = createOpenAI();
 const anthropic = createAnthropic();
 
 export const execute = inngest.createFunction(
+  // Unique identifier
   { id: "execute-ai" },
+  // Event that triggers the function
   { event: "execute/ai" },
+  // Actual function logic
   async ({ event, step }) => {
     await step.sleep("pretend", "5s");
 
