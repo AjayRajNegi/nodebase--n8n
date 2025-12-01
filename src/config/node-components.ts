@@ -1,5 +1,5 @@
 import { HttpRequestNode } from "@/app/features/executions/components/http-request/node";
-import { ManualTriggerNode } from "@/app/triggers/components/manual-trigger/node";
+import { ManualTriggerNode } from "@/app/features/triggers/components/manual-trigger/node";
 import { InitialNode } from "@/components/initial-node";
 import { NodeType } from "@/generated/prisma";
 import { NodeTypes } from "@xyflow/react";

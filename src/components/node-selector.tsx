@@ -23,6 +23,7 @@ export type NodeTypeOption = {
   icon: React.ComponentType<{ className?: string }> | string;
 };
 
+// Start workflow
 const triggerNodes: NodeTypeOption[] = [
   {
     type: NodeType.MANUAL_TRIGGER,
@@ -33,6 +34,7 @@ const triggerNodes: NodeTypeOption[] = [
   },
 ];
 
+// Run after triggers
 const executionNodes: NodeTypeOption[] = [
   {
     type: NodeType.HTTP_REQUEST,
@@ -58,7 +60,10 @@ export function NodeSelector({
   const handleNodeSelect = useCallback(
     (selection: NodeTypeOption) => {
       if (selection.type === NodeType.MANUAL_TRIGGER) {
+        // Gets the current nodes on the canvas
         const nodes = getNodes();
+
+        // If the canvas already contains a manualTrigger then do not add a new trigger
         const hasManualTrigger = nodes.some(
           (node) => node.type === NodeType.MANUAL_TRIGGER
         );
@@ -68,11 +73,13 @@ export function NodeSelector({
           return;
         }
       }
+
       setNodes((nodes) => {
         const hasInitialTrigger = nodes.some(
           (node) => node.type === NodeType.INITIAL
         );
 
+        // Nodes are added a random position near the center of screen
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
 

@@ -25,6 +25,7 @@ interface BaseExecutionNodeProps extends NodeProps {
   onDoubleClick?: () => void;
 }
 
+// Uses memo to avoid unnecessary re-renders
 export const BaseExecutionNode = memo(
   ({
     id,
@@ -36,7 +37,10 @@ export const BaseExecutionNode = memo(
     onSettings,
     onDoubleClick,
   }: BaseExecutionNodeProps) => {
+    // Used to modify overall flow graph
     const { setNodes, setEdges } = useReactFlow();
+
+    // Removes the node:id and edges connected to id
     const handleDelete = () => {
       setNodes((currentNodes) => {
         const updatedNodes = currentNodes.filter((node) => node.id !== id);
@@ -69,6 +73,7 @@ export const BaseExecutionNode = memo(
                 <Icon className="size-4 text-muted-foreground" />
               )}
               {children}
+              {/* Allows multiple connections for a node */}
               <BaseHandle
                 id="target-1"
                 type="target"
