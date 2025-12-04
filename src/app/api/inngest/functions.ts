@@ -33,37 +33,36 @@ export const execute = inngest.createFunction(
       }
     );
 
-    // const { steps: openaiSteps } = await step.ai.wrap(
-    //   "openai-generate-text",
-    //   generateText,
-    //   {
-    //     model: openai("gpt-4"),
-    //     system: "You are a helpful assistant.",
-    //     prompt: "What is 2 +2 ?",
-    //     experimental_telemetry: {
-    //       isEnabled: true,
-    //       recordInputs: true,
-    //       recordOutputs: true,
-    //     },
-    //   }
-    // );
+    const { steps: openaiSteps } = await step.ai.wrap(
+      "openai-generate-text",
+      generateText,
+      {
+        model: openai("gpt-4"),
+        system: "You are a helpful assistant.",
+        prompt: "What is 2 +2 ?",
+        experimental_telemetry: {
+          isEnabled: true,
+          recordInputs: true,
+          recordOutputs: true,
+        },
+      }
+    );
 
-    // const { steps: anthropicSteps } = await step.ai.wrap(
-    //   "anthropic-generate-text",
-    //   generateText,
-    //   {
-    //     model: anthropic("claude-sonnet-4-0"),
-    //     system: "You are a helpful assistant.",
-    //     prompt: "What is 2 +2 ?",
-    //     experimental_telemetry: {
-    //       isEnabled: true,
-    //       recordInputs: true,
-    //       recordOutputs: true,
-    //     },
-    //   }
-    // );
+    const { steps: anthropicSteps } = await step.ai.wrap(
+      "anthropic-generate-text",
+      generateText,
+      {
+        model: anthropic("claude-sonnet-4-0"),
+        system: "You are a helpful assistant.",
+        prompt: "What is 2 +2 ?",
+        experimental_telemetry: {
+          isEnabled: true,
+          recordInputs: true,
+          recordOutputs: true,
+        },
+      }
+    );
 
-    // return { geminiSteps, openaiSteps, anthropicSteps };
-    return { geminiSteps };
+    return { geminiSteps, openaiSteps, anthropicSteps };
   }
 );
