@@ -1,68 +1,48 @@
+import { getExecutor } from "@/app/features/executions/lib/executor-registry";
+import { NodeType } from "@/generated/prisma";
 import { inngest } from "@/inngest/client";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { generateText } from "ai";
-import { createOpenAI } from "@ai-sdk/openai";
-import { createAnthropic } from "@ai-sdk/anthropic";
+import { topologicalSort } from "@/inngest/utils";
+import prisma from "@/lib/db";
+import { NonRetriableError } from "inngest";
 
-// Creates instances of each model
-const google = createGoogleGenerativeAI();
-const openai = createOpenAI();
-const anthropic = createAnthropic();
-
-export const execute = inngest.createFunction(
+export const executeWorkflow = inngest.createFunction(
   // Unique identifier
-  { id: "execute-ai" },
+  { id: "execute-workflow" },
   // Event that triggers the function
-  { event: "execute/ai" },
+  { event: "workflows/execute.workflow" },
   // Actual function logic
   async ({ event, step }) => {
-    await step.sleep("pretend", "5s");
+    const workflowId = event.data.workflowId;
+    if (!workflowId) {
+      throw new NonRetriableError("Workflow ID is missing.");
+    }
 
-    const { steps: geminiSteps } = await step.ai.wrap(
-      "gemini-generate-text",
-      generateText,
-      {
-        model: google("gemini-2.5-flash"),
-        system: "You are a helpful assistant.",
-        prompt: "What is 2 +2 ?",
-        experimental_telemetry: {
-          isEnabled: true,
-          recordInputs: true,
-          recordOutputs: true,
+    const sortedNodes = await step.run("prepare-workflow", async () => {
+      const workflow = await prisma.workflow.findUniqueOrThrow({
+        where: { id: workflowId },
+        include: {
+          nodes: true,
+          connections: true,
         },
-      }
-    );
+      });
 
-    const { steps: openaiSteps } = await step.ai.wrap(
-      "openai-generate-text",
-      generateText,
-      {
-        model: openai("gpt-4"),
-        system: "You are a helpful assistant.",
-        prompt: "What is 2 +2 ?",
-        experimental_telemetry: {
-          isEnabled: true,
-          recordInputs: true,
-          recordOutputs: true,
-        },
-      }
-    );
+      return topologicalSort(workflow.nodes, workflow.connections);
+    });
 
-    const { steps: anthropicSteps } = await step.ai.wrap(
-      "anthropic-generate-text",
-      generateText,
-      {
-        model: anthropic("claude-sonnet-4-0"),
-        system: "You are a helpful assistant.",
-        prompt: "What is 2 +2 ?",
-        experimental_telemetry: {
-          isEnabled: true,
-          recordInputs: true,
-          recordOutputs: true,
-        },
-      }
-    );
+    // Initialize context with any initial data from the trigger
+    let context = event.data.initialData || {};
 
-    return { geminiSteps, openaiSteps, anthropicSteps };
+    // Execute each node
+    for (const node of sortedNodes) {
+      const executor = getExecutor(node.type as NodeType);
+      context = await executor({
+        data: node.data as Record<string, unknown>,
+        nodeId: node.id,
+        context,
+        step,
+      });
+    }
+
+    return { workflowId, result: context };
   }
 );
