@@ -25,6 +25,9 @@ export const httpRequestExecutor: NodeExecutor<httpRequestExecutor> = async ({
     if (["POST", "PUT", "PATCH"].includes(method)) {
       if (data.body) {
         options.body = data.body;
+        options.headers = {
+          "Content-Type": "application/jsons",
+        };
       }
     }
 
