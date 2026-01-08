@@ -3,15 +3,15 @@ import { NonRetriableError } from "inngest";
 import ky, { type Options as KyOptions } from "ky";
 
 type httpRequestExecutor = {
-  varaiableName?: string;
-  endpoint?: string;
-  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  varaiableName: string;
+  endpoint: string;
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: string;
 };
 
 export const httpRequestExecutor: NodeExecutor<httpRequestExecutor> = async ({
   data,
-  nodeId,
+  //nodeId,
   context,
   step,
 }) => {
@@ -21,10 +21,13 @@ export const httpRequestExecutor: NodeExecutor<httpRequestExecutor> = async ({
   if (!data.varaiableName) {
     throw new NonRetriableError("Variable name not configured.");
   }
+  if (!data.method) {
+    throw new NonRetriableError("Method not configured.");
+  }
 
   const result = await step.run("http-request", async () => {
-    const endpoint = data.endpoint!;
-    const method = data.method || "GET";
+    const endpoint = data.endpoint;
+    const method = data.method;
 
     const options: KyOptions = { method };
 
@@ -51,16 +54,9 @@ export const httpRequestExecutor: NodeExecutor<httpRequestExecutor> = async ({
       },
     };
 
-    if (data.varaiableName) {
-      return {
-        ...context,
-        [data.varaiableName]: responsePayload,
-      };
-    }
-
     return {
       ...context,
-      ...responsePayload,
+      [data.varaiableName]: responsePayload,
     };
   });
 
