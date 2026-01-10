@@ -46,3 +46,12 @@ export const executeWorkflow = inngest.createFunction(
     return { workflowId, result: context };
   }
 );
+
+export const helloWorld = inngest.createFunction(
+  { id: "hell-world" },
+  { event: "test/hello.world" },
+  async ({ event, step }) => {
+    await step.sleep("wait-a-moment", "1s");
+    return { message: `Hello ${event.data.email}!` };
+  }
+);
